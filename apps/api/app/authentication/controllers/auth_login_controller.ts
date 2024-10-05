@@ -10,8 +10,7 @@ export default class AuthLoginController {
     const { email, password } = request.only(['email', 'password'])
     try {
       const user = await this.authService.verifyCredentials({ email, password })
-      const token = await this.authService.generateToken(user)
-      return token
+      return await this.authService.generateToken(user)
     } catch (error) {
       return response.status(400).json({ message: 'Invalid credentials' })
     }
