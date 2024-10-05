@@ -4,19 +4,53 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8068d071-6c84-425d-b57a-e9a723fcc158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/hekolearn.fr.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pnpm-workspace.yaml" afterDir="false" />
+    <list default="true" id="8068d071-6c84-425d-b57a-e9a723fcc158" name="Changes" comment="initial project">
+      <change afterPath="$PROJECT_DIR$/apps/api/app/authentication/controllers/auth_login_controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/api/app/authentication/controllers/auth_oauth_controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/api/app/authentication/repositories/auth_repository.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/api/app/authentication/routes.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/api/app/authentication/services/auth_services.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/front/app/login/ErrorMessage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/front/app/login/GithubLoginButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/front/app/login/LoginForm.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/front/app/login/page.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/front/components/LogoLoader.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/adonisrc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/adonisrc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/app/models/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/app/models/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/config/cors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/config/cors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/database/migrations/1728072032771_create_users_table.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/database/migrations/1728072032771_create_users_table.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/database/migrations/1728072032776_create_access_tokens_table.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/database/migrations/1728072032776_create_access_tokens_table.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/start/env.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/start/env.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/start/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/start/routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/api/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/api/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/front/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/front/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/front/next.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/apps/front/next.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/front/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/front/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/front" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
@@ -32,16 +66,26 @@
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/api",
     "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "/home/ekodev/Ekodev/hekolearn.fr/node_modules/prettier",
+    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
+    "ts.external.directory.path": "/home/ekodev/Ekodev/hekolearn.fr/apps/api/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/api/app/authentication/services" />
+      <recent name="$PROJECT_DIR$/apps/api/app/authentication" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -57,11 +101,24 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1728071358877</updated>
-      <workItem from="1728071361928" duration="959000" />
+      <workItem from="1728071361928" duration="25312000" />
     </task>
+    <task id="LOCAL-00001" summary="initial project">
+      <option name="closed" value="true" />
+      <created>1728072427135</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1728072427135</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="initial project" />
+    <option name="LAST_COMMIT_MESSAGE" value="initial project" />
   </component>
 </project>
