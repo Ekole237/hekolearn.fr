@@ -5,10 +5,18 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id').notNullable()
-      table.string('full_name').nullable()
+      table.uuid('id').primary().defaultTo(this.db.rawQuery('uuid_generate_v4()').knexQuery)
+      table.string('username', 254).notNullable().unique()
       table.string('email', 254).notNullable().unique()
-      table.string('password').notNullable()
+      table.string('password').nullable()
+      table.string('avatar').nullable()
+      table.enu('status', ['active', 'inactive', 'pending']).notNullable().defaultTo('pending')
+
+      table.string('provider_id').nullable()
+      table.string('provider_name').nullable()
+
+      table.timestamp('last_login_at').nullable()
+      table.integer('score').notNullable().defaultTo(0)
 
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()

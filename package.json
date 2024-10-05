@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "pnpm -r dev",
+    "dev:front": "pnpm --filter front dev",
+    "dev:back": "pnpm --filter api dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
