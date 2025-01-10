@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { CheckCircle, XCircle, AlertCircle, ArrowRight } from "lucide-react";
+import type { QuizWithRelations, QuizAttempt, QuizQuestion } from "@/types/supabase";
 
 interface QuizPageProps {
   params: {
@@ -17,6 +18,10 @@ export default async function QuizPage({ params }: QuizPageProps) {
   const supabase = createServerClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
+  if (!userId) {
+    notFound();
+  }
+
   // Récupérer le quiz et ses questions
   const { data: quiz } = await supabase
     .from("quizzes")
@@ -28,7 +33,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
           title,
           course:courses(
             title,
-            subject:subjects(name)
+            subject:categories(name)
           )
         )
       ),
@@ -43,6 +48,8 @@ export default async function QuizPage({ params }: QuizPageProps) {
     notFound();
   }
 
+  const typedQuiz = quiz as QuizWithRelations;
+
   // Récupérer les tentatives précédentes
   const { data: attempts } = await supabase
     .from("quiz_attempts")
@@ -51,24 +58,24 @@ export default async function QuizPage({ params }: QuizPageProps) {
     .eq("user_id", userId)
     .order("completed_at", { ascending: false });
 
-  const lastAttempt = attempts?.[0];
+  const lastAttempt = attempts?.[0] as QuizAttempt | undefined;
 
   return (
     <div className="space-y-8">
       <div className="space-y-2">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{quiz.lesson.chapter.course.subject.name}</span>
+          <span>{typedQuiz.lesson.chapter.course.subject.name}</span>
           <span>•</span>
-          <span>{quiz.lesson.chapter.course.title}</span>
+          <span>{typedQuiz.lesson.chapter.course.title}</span>
           <span>•</span>
-          <span>{quiz.lesson.chapter.title}</span>
+          <span>{typedQuiz.lesson.chapter.title}</span>
           <span>•</span>
-          <span>{quiz.lesson.title}</span>
+          <span>{typedQuiz.lesson.title}</span>
         </div>
 
         <SectionHeader
-          title={quiz.title}
-          description={quiz.description}
+          title={typedQuiz.title}
+          description={typedQuiz.description}
         >
           {lastAttempt && (
             <Badge variant={lastAttempt.score >= 80 ? "success" : "warning"}>
@@ -79,7 +86,7 @@ export default async function QuizPage({ params }: QuizPageProps) {
       </div>
 
       <div className="space-y-6">
-        {quiz.questions.map((question, index) => {
+        {typedQuiz.questions.map((question: QuizQuestion, index: number) => {
           const userAnswer = lastAttempt?.answers?.[question.id];
           const isCorrect = userAnswer === question.correct_answer;
 

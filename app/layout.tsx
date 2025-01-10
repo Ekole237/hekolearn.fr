@@ -1,13 +1,14 @@
-import './globals.css';
-import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import ClientLayout from '@/components/layouts/client-layout';
+import { Toaster } from '@/components/ui/toaster';
+import { Navbar } from '@/components/layout/navbar';
+import { AuthProvider } from '@/lib/auth/context';
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'EduPlatform - Apprentissage Personnalisé',
-  description: 'Plateforme éducative innovante pour les élèves de la 6ème à la Terminale',
+export const metadata = {
+  title: 'Project Bolt',
+  description: 'Plateforme de formation en ligne',
 };
 
 export default function RootLayout({
@@ -16,11 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr">
       <body className={inter.className}>
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+        <AuthProvider>
+          <Navbar />
+          <div className="pt-14 h-full">
+            {children}
+          </div>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

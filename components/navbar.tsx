@@ -40,7 +40,7 @@ export function Navbar() {
           
           {!user && (
             <Button asChild variant="outline">
-              <Link href="/auth/login">
+              <Link href="/auth">
                 Connexion
               </Link>
             </Button>

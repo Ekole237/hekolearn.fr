@@ -3,7 +3,22 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
-import { AuthContextType, AuthState } from '@/types/auth.types';
+import { Database } from '@/types/database.types';
+
+type UserWithRole = User & {
+  role?: 'student' | 'teacher' | 'admin';
+};
+
+interface AuthState {
+  user: UserWithRole | null;
+  loading: boolean;
+  error: Error | null;
+}
+
+interface AuthContextType extends AuthState {
+  signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
+}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -22,28 +37,75 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
     error: null,
   });
 
-  const supabase = createClientComponentClient();
+  const supabase = createClientComponentClient<Database>();
   const router = useRouter();
 
-  useEffect(() => {
-    // Vérifier la session initiale
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      setState(prev => ({
-        ...prev,
-        user: session?.user ?? null,
-        loading: false,
-        error: error ?? null,
-      }));
-    });
+  const refreshSession = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) throw error;
 
-    // Écouter les changements d'auth
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      if (session?.user) {
+        // Récupérer le profil de l'utilisateur avec son rôle
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', session.user.id)
+          .single();
+
         setState(prev => ({
           ...prev,
-          user: session?.user ?? null,
+          user: {
+            ...session.user,
+            role: profile?.role
+          },
           loading: false,
         }));
+      } else {
+        setState(prev => ({
+          ...prev,
+          user: null,
+          loading: false,
+        }));
+      }
+    } catch (error) {
+      console.error('Error refreshing session:', error);
+      setState(prev => ({
+        ...prev,
+        error: error as Error,
+        loading: false,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    refreshSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          // Récupérer le profil de l'utilisateur avec son rôle
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single();
+
+          setState(prev => ({
+            ...prev,
+            user: {
+              ...session.user,
+              role: profile?.role
+            },
+            loading: false,
+          }));
+        } else {
+          setState(prev => ({
+            ...prev,
+            user: null,
+            loading: false,
+          }));
+        }
 
         if (event === 'SIGNED_OUT') {
           router.push('/auth/login');
@@ -57,36 +119,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }): JSX.E
   }, [supabase, router]);
 
   const signOut = async () => {
-    try {
-      await supabase.auth.signOut();
-      setState(prev => ({ ...prev, user: null }));
-      router.push('/auth/login');
-    } catch (error) {
-      setState(prev => ({ ...prev, error: error as Error }));
-    }
-  };
-
-  const refreshSession = async () => {
-    try {
-      const { data: { session }, error } = await supabase.auth.refreshSession();
-      setState(prev => ({
-        ...prev,
-        user: session?.user ?? null,
-        error: error ?? null,
-      }));
-    } catch (error) {
-      setState(prev => ({ ...prev, error: error as Error }));
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+      throw error;
     }
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...state,
-        signOut,
-        refreshSession,
-      }}
-    >
+    <AuthContext.Provider value={{ ...state, signOut, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );

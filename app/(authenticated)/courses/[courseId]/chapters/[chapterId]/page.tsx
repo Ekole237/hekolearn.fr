@@ -14,6 +14,33 @@ interface ChapterPageProps {
   };
 }
 
+interface Lesson {
+  id: string;
+  title: string;
+  type: 'video' | 'reading';
+  estimated_duration: string;
+  order_index: number;
+}
+
+interface Chapter {
+  id: string;
+  title: string;
+  description: string;
+  objectives: string[];
+  lessons: Lesson[];
+  course: {
+    title: string;
+    subject: {
+      name: string;
+    };
+  };
+}
+
+interface LessonProgress {
+  lesson_id: string;
+  completed: boolean;
+}
+
 export default async function ChapterPage({ params }: ChapterPageProps) {
   const supabase = createServerClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
@@ -49,7 +76,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
     .eq("user_id", userId)
     .in(
       "lesson_id",
-      chapter.lessons.map((l) => l.id)
+      chapter.lessons.map((l: Lesson) => l.id)
     );
 
   // Calculer la progression globale du chapitre
@@ -59,7 +86,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
 
   // Trier les leçons par ordre
   const sortedLessons = [...chapter.lessons].sort(
-    (a, b) => a.order_index - b.order_index
+    (a: Lesson, b: Lesson) => a.order_index - b.order_index
   );
 
   return (
@@ -105,12 +132,12 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
       <div className="space-y-4">
         <h2 className="text-lg font-semibold">Leçons du chapitre</h2>
         <div className="space-y-4">
-          {sortedLessons.map((lesson, index) => {
+          {sortedLessons.map((lesson: Lesson, index: number) => {
             const progress = lessonProgress?.find(
-              (p) => p.lesson_id === lesson.id
+              (p: LessonProgress) => p.lesson_id === lesson.id
             );
             const isLocked = index > 0 && !lessonProgress?.find(
-              (p) => p.lesson_id === sortedLessons[index - 1].id
+              (p: LessonProgress) => p.lesson_id === sortedLessons[index - 1].id
             )?.completed;
 
             return (

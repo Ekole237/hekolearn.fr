@@ -17,18 +17,18 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith('/profile') ||
     request.nextUrl.pathname.startsWith('/(authenticated)')
   )) {
-    const redirectUrl = new URL('/auth/login', request.url);
+    const redirectUrl = new URL('/auth', request.url);
     redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Si l'utilisateur est connecté et essaie d'accéder aux pages d'auth
+  // Si l'utilisateur est connecté et essaie d'accéder aux pages d'auth ou à la page d'accueil
   if (session && (
-    request.nextUrl.pathname.startsWith('/auth/login') ||
-    request.nextUrl.pathname.startsWith('/auth/register')
+    request.nextUrl.pathname === '/' ||
+    request.nextUrl.pathname.startsWith('/auth')
   )) {
-    // Rediriger vers la page demandée ou la page d'accueil
-    const redirectTo = request.nextUrl.searchParams.get('redirectTo') || '/';
+    // Rediriger vers la page des cours
+    const redirectTo = request.nextUrl.searchParams.get('redirectTo') || '/courses';
     return NextResponse.redirect(new URL(redirectTo, request.url));
   }
 

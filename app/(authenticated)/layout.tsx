@@ -1,6 +1,6 @@
 'use client';
 
-import { useRequireAuth } from '@/lib/auth';
+import { useRequireAuth } from "@/lib/auth/hooks";
 
 export default function AuthenticatedLayout({
   children,
@@ -10,11 +10,8 @@ export default function AuthenticatedLayout({
   useRequireAuth();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Ajouter la navigation ici plus tard */}
-      <main className="container mx-auto py-6">
-        {children}
-      </main>
-    </div>
+    <main className="flex-1 container mx-auto py-6 px-4">
+      {children}
+    </main>
   );
 }
