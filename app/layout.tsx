@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import { Navbar } from '@/components/layout/navbar';
 import { AuthProvider } from '@/lib/auth/context';
+import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,15 +18,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <body className={inter.className}>
-        <AuthProvider>
-          <Navbar />
-          <div className="pt-14 h-full">
-            {children}
-          </div>
-          <Toaster />
-        </AuthProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            <Navbar />
+            <div className="pt-14 h-full">
+              {children}
+            </div>
+            <Toaster />
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
