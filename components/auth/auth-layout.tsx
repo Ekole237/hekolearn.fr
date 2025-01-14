@@ -24,8 +24,11 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         alt="Background"
         fill
         className="object-cover opacity-90 scale-105"
-        quality={100}
+        quality={75}
         priority
+        sizes="100vw"
+        placeholder="blur"
+        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRoaHSQtJSEkLzYvLy02LjY2OjY2Njo2NjY2NjY2NjY2NjY2NjY2NjY2Njb/2wBDAR0XFx0aHR4dHR4mIiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJib/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
       />
       
       {/* Overlay avec effet de flou amélioré */}
@@ -33,7 +36,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         className={cn(
           "absolute inset-0 bg-gradient-to-br from-background/95 via-background/80 to-background/95",
           "backdrop-blur-md",
-          "transition-all duration-1000 ease-out",
+          "transition-all duration-300 ease-out",
           mounted ? "opacity-100" : "opacity-0"
         )} 
       />
@@ -45,19 +48,14 @@ export function AuthLayout({ children }: AuthLayoutProps) {
           "bg-background/60 dark:bg-background/40",
           "backdrop-blur-xl",
           "border-2 border-muted/30",
-          "shadow-[0_0_15px_rgba(0,0,0,0.1),0_0_6px_rgba(0,0,0,0.05)]",
-          "dark:shadow-[0_0_15px_rgba(0,0,0,0.5),0_0_6px_rgba(0,0,0,0.3)]",
+          "shadow-[0_0_15px_rgba(0,0,0,0.1)]",
+          "dark:shadow-[0_0_15px_rgba(0,0,0,0.5)]",
           "rounded-xl",
-          "transition-all duration-700 ease-out transform",
+          "transition-transform duration-300 ease-out",
           mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         )}
       >
-        <div className="relative z-10">
-          {children}
-        </div>
-
-        {/* Effet de brillance sur la carte */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 rounded-xl" />
+        {children}
       </Card>
     </div>
   );
