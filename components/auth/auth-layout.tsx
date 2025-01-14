@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 interface AuthLayoutProps {
@@ -23,7 +22,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         src="/images/light-dispersion-optical-effect-prism.jpg"
         alt="Background"
         fill
-        className="object-cover opacity-90 scale-105"
+        className="object-cover opacity-90 scale-105 light:opacity-50 light:scale-100"
         quality={75}
         priority
         sizes="100vw"
@@ -41,22 +40,18 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         )} 
       />
 
-      {/* Card avec effet d'élévation amélioré */}
-      <Card 
+      {/* Container du contenu avec effet de flou */}
+      <div 
         className={cn(
-          "relative z-10 p-8 md:p-10",
+          "relative z-10 w-full max-w-md mx-auto",
           "bg-background/60 dark:bg-background/40",
-          "backdrop-blur-xl",
-          "border-2 border-muted/30",
-          "shadow-[0_0_15px_rgba(0,0,0,0.1)]",
-          "dark:shadow-[0_0_15px_rgba(0,0,0,0.5)]",
-          "rounded-xl",
-          "transition-transform duration-300 ease-out",
-          mounted ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+          "backdrop-blur-xl rounded-lg",
+          "transition-all duration-300",
+          mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
         {children}
-      </Card>
+      </div>
     </div>
   );
 }

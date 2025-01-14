@@ -10,9 +10,9 @@ export function SignUpForm() {
   const router = useRouter()
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight">
           Inscrivez-vous
         </h1>
         <p className="text-muted-foreground">
@@ -64,33 +64,11 @@ export function SignUpForm() {
         </Button>
       </div>
 
-      <div className="flex flex-col items-center gap-4">
-        <Button
-          variant="ghost"
-          className="w-full"
-          onClick={() => router.push("/auth")}
-        >
-          Retour
-        </Button>
-
-        <div className="text-center text-sm text-muted-foreground space-y-1">
-          <p>En vous inscrivant sur Hekolearn, vous acceptez nos</p>
-          <p className="space-x-1">
-            <Link href="/terms" className="underline hover:text-primary">
-              conditions d&apos;utilisation
-            </Link>
-            <span>et notre</span>
-            <Link href="/privacy" className="underline hover:text-primary">
-              politique de confidentialité
-            </Link>
-          </p>
-          <p className="pt-2">
-            Vous avez déjà un compte ?{" "}
-            <Link href="/auth/signin" className="underline hover:text-primary">
-              Connectez-vous
-            </Link>
-          </p>
-        </div>
+      <div className="text-center text-sm">
+        Vous avez déjà un compte ?{" "}
+        <Link href="/auth" className="font-medium text-primary hover:underline">
+          Connectez-vous
+        </Link>
       </div>
     </div>
   )

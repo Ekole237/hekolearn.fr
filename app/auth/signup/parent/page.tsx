@@ -5,7 +5,7 @@ import { AuthLayoutSplit } from "@/components/auth/auth-layout-split"
 
 export default function ParentSignupPage() {
   return (
-    <AuthLayoutSplit description="Suivez les progrès de vos enfants et accompagnez-les dans leur réussite scolaire avec Hekolearn.">
+    <AuthLayoutSplit>
       <ParentSignUpForm />
     </AuthLayoutSplit>
   )
