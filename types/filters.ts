@@ -6,37 +6,36 @@ export interface ResourceFilters {
   level?: string;
   type?: string;
   tags?: string[];
-  sortBy: SortOption;
+  sortBy: 'recent' | 'downloads' | 'relevance';
 }
 
 export const RESOURCE_TYPES = [
   { value: 'document', label: 'Document' },
-  { value: 'exercise', label: 'Exercice' },
   { value: 'video', label: 'Vidéo' },
-  { value: 'quiz', label: 'Quiz' }
+  { value: 'exercise', label: 'Exercice' },
+  { value: 'tool', label: 'Outil' },
 ] as const;
 
 export const SUBJECTS = [
-  { value: 'Mathématiques', label: 'Mathématiques' },
-  { value: 'Français', label: 'Français' },
-  { value: 'Histoire-Géographie', label: 'Histoire-Géographie' },
-  { value: 'Physique-Chimie', label: 'Physique-Chimie' },
-  { value: 'SVT', label: 'SVT' },
-  { value: 'Anglais', label: 'Anglais' }
+  { value: 'mathematics', label: 'Mathématiques' },
+  { value: 'physics', label: 'Physique' },
+  { value: 'chemistry', label: 'Chimie' },
+  { value: 'biology', label: 'Biologie' },
+  { value: 'french', label: 'Français' },
+  { value: 'english', label: 'Anglais' },
+  { value: 'history', label: 'Histoire' },
+  { value: 'geography', label: 'Géographie' },
 ] as const;
 
 export const LEVELS = [
-  { value: '6ème', label: '6ème' },
-  { value: '5ème', label: '5ème' },
-  { value: '4ème', label: '4ème' },
-  { value: '3ème', label: '3ème' },
-  { value: '2nde', label: '2nde' },
-  { value: '1ère', label: '1ère' },
-  { value: 'Terminale', label: 'Terminale' }
+  { value: 'primary', label: 'Primaire' },
+  { value: 'middle-school', label: 'Collège' },
+  { value: 'high-school', label: 'Lycée' },
+  { value: 'higher-education', label: 'Supérieur' },
 ] as const;
 
 export const SORT_OPTIONS = [
   { value: 'recent', label: 'Plus récent' },
   { value: 'downloads', label: 'Plus téléchargé' },
-  { value: 'relevance', label: 'Pertinence' }
+  { value: 'relevance', label: 'Pertinence' },
 ] as const;

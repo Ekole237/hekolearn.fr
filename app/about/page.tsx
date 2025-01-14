@@ -19,7 +19,12 @@ const stats = {
 export const dynamic = 'force-dynamic';
 
 export default async function AboutPage() {
-  const teachers = await dataService.getTeachers();
+  let teachers = [];
+  try {
+    teachers = await dataService.getTeachers();
+  } catch (error) {
+    console.error('Erreur lors du chargement des enseignants:', error);
+  }
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -54,103 +59,62 @@ export default async function AboutPage() {
           <CardHeader>
             <CardTitle>Innovation</CardTitle>
             <CardDescription>
-              Des méthodes d&apos;apprentissage modernes et adaptées aux besoins actuels.
+              Une approche moderne de l&apos;apprentissage adaptée aux besoins actuels.
             </CardDescription>
           </CardHeader>
         </Card>
       </section>
 
-      {/* Teachers Section */}
+      {/* Statistiques */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+        {Object.entries(stats).map(([key, value]) => (
+          <Card key={key}>
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold text-center">{value}</CardTitle>
+              <CardDescription className="text-center capitalize">
+                {key === "experience" ? "années d'expérience" :
+                 key === "satisfaction" ? "satisfaction" :
+                 key === "students" ? "élèves" : "matières"}
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        ))}
+      </section>
+
+      {/* Équipe */}
       {teachers.length > 0 && (
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-center mb-8">Notre Équipe Pédagogique</h2>
-          <div className="grid gap-8">
+          <h2 className="text-3xl font-bold text-center mb-8">Notre Équipe</h2>
+          <div className="grid md:grid-cols-2 gap-6">
             {teachers.map((teacher) => (
-              <Card key={teacher.id} className="overflow-hidden">
-                <div className="flex flex-col md:flex-row gap-8 p-8">
-                  <div className="flex flex-col items-center md:items-start">
-                    <Avatar className="h-32 w-32 mb-4">
-                      <AvatarImage src={teacher.avatar_url || ''} alt={teacher.full_name} />
-                      <AvatarFallback>{teacher.full_name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    {teacher.is_founder && (
-                      <Badge className="bg-primary" variant="secondary">
-                        Fondateur
+              <Card key={teacher.id}>
+                <CardContent className="flex items-start space-x-4 pt-6">
+                  <Avatar className="h-16 w-16">
+                    {teacher.avatar_url ? (
+                      <AvatarImage src={teacher.avatar_url} alt={teacher.full_name} />
+                    ) : (
+                      <AvatarFallback>{teacher.full_name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-semibold">{teacher.full_name}</h3>
+                    {teacher.title && (
+                      <Badge variant="secondary" className="mb-2">
+                        {teacher.title}
                       </Badge>
                     )}
+                    {teacher.bio && (
+                      <p className="text-muted-foreground text-sm">
+                        {teacher.bio}
+                      </p>
+                    )}
                   </div>
-                  <div className="flex-grow">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-2xl font-bold">{teacher.full_name}</h3>
-                    </div>
-                    <p className="text-muted-foreground mb-2">{teacher.role_title}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {teacher.subjects.map((subject) => (
-                        <Badge key={subject} variant="outline">
-                          {subject}
-                        </Badge>
-                      ))}
-                    </div>
-                    <p className="text-muted-foreground mb-4">{teacher.bio}</p>
-                    <p className="text-sm">{teacher.education}</p>
-                  </div>
-                </div>
+                </CardContent>
               </Card>
             ))}
           </div>
         </section>
       )}
-
-      {/* Statistics */}
-      <section className="grid md:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-primary">
-              {stats.students}
-            </CardTitle>
-            <CardDescription>Élèves accompagnés</CardDescription>
-          </CardHeader>
-          <CardContent className="text-center text-muted-foreground">
-            Depuis la création
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-primary">
-              {stats.experience}
-            </CardTitle>
-            <CardDescription>Années d&apos;expérience</CardDescription>
-          </CardHeader>
-          <CardContent className="text-center text-muted-foreground">
-            En enseignement
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-primary">
-              {stats.satisfaction}
-            </CardTitle>
-            <CardDescription>Satisfaction</CardDescription>
-          </CardHeader>
-          <CardContent className="text-center text-muted-foreground">
-            Des élèves satisfaits
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-primary">
-              {stats.subjects}
-            </CardTitle>
-            <CardDescription>Matières</CardDescription>
-          </CardHeader>
-          <CardContent className="text-center text-muted-foreground">
-            Principales couvertes
-          </CardContent>
-        </Card>
-      </section>
     </div>
   );
 }

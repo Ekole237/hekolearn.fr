@@ -1,5 +1,7 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { ResourceExplorer } from "@/components/resources/resource-explorer";
+import { Skeleton } from "@/components/ui/skeleton";
 import { dataService } from "@/lib/services/data-service";
 import type { ResourceFilters } from "@/types/filters";
 
@@ -20,6 +22,29 @@ interface PageProps {
   };
 }
 
+function ResourceExplorerSkeleton() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <div className="flex flex-wrap gap-4">
+          <Skeleton className="h-10 w-[180px]" />
+          <Skeleton className="h-10 w-[180px]" />
+          <Skeleton className="h-10 w-[180px]" />
+          <Skeleton className="h-10 w-[180px]" />
+        </div>
+        <Skeleton className="h-10 w-full" />
+      </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-[300px]">
+            <Skeleton className="h-full w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function ResourcesPage({ searchParams }: PageProps) {
   // Conversion des paramètres d'URL en filtres
   const filters: ResourceFilters = {
@@ -34,15 +59,19 @@ export default async function ResourcesPage({ searchParams }: PageProps) {
   const resources = await dataService.getResources(filters);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Ressources Pédagogiques</h1>
-        <p className="text-muted-foreground">
-          Explorez notre collection de ressources pédagogiques pour tous les niveaux.
-        </p>
-      </div>
+    <main className="container mx-auto px-4 py-8">
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-4xl font-bold mb-2">Ressources Pédagogiques</h1>
+          <p className="text-muted-foreground">
+            Explorez notre collection de ressources pédagogiques pour tous les niveaux.
+          </p>
+        </div>
 
-      <ResourceExplorer initialResources={resources} />
-    </div>
+        <Suspense fallback={<ResourceExplorerSkeleton />}>
+          <ResourceExplorer initialResources={resources} />
+        </Suspense>
+      </div>
+    </main>
   );
 }

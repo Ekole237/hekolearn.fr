@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 
 const navItems = [
   { href: "/courses", label: "Cours" },
@@ -21,6 +22,12 @@ const navItems = [
 
 export function Navbar() {
   const { user, signOut } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
 
   return (
     <motion.nav 
@@ -77,7 +84,7 @@ export function Navbar() {
         >
           <ThemeToggle />
           
-          {!user && (
+          {!user ? (
             <Button 
               asChild 
               variant="default"
@@ -92,35 +99,24 @@ export function Navbar() {
                 />
               </Link>
             </Button>
-          )}
-
-          {user && (
+          ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="ghost" 
-                  className="relative h-8 pl-2 pr-4 rounded-full flex items-center space-x-2 hover:bg-accent"
+                  className="relative h-8 w-8 rounded-full"
                 >
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.user_metadata.avatar_url} alt={user.email || ''} />
-                    <AvatarFallback className="bg-primary/10">
-                      {user.email?.slice(0, 2).toUpperCase()}
+                    <AvatarImage src={user.profile?.avatar_url} alt={user.profile?.username || 'Avatar'} />
+                    <AvatarFallback>
+                      {user.profile?.username?.charAt(0).toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm hidden sm:inline-block">{user.email}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center">
-                    <span className="flex-1">Mon Profil</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={() => signOut()}
-                  className="text-red-500 focus:text-red-500"
-                >
-                  Déconnexion
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Se déconnecter
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
