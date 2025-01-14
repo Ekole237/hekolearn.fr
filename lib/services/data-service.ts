@@ -42,6 +42,11 @@ export const dataService = {
         query = query.eq('type', filters.type);
       }
 
+      // Filtre par tags
+      if (filters.tags && filters.tags.length > 0) {
+        query = query.contains('tags', filters.tags);
+      }
+
       // Tri
       switch (filters.sortBy) {
         case 'recent':
@@ -68,35 +73,6 @@ export const dataService = {
 
     if (error) throw error;
     return data as Resource[];
-  },
-
-  async getResourcesBySubject(subject: string) {
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from('resources')
-      .select(`
-        *,
-        tags:resource_tags(
-          tag:tags(*)
-        )
-      `)
-      .eq('subject', subject)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data as Resource[];
-  },
-
-  // Tags
-  async getTags() {
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from('tags')
-      .select('*')
-      .order('name');
-
-    if (error) throw error;
-    return data as Tag[];
   },
 
   // Statistiques des ressources
@@ -141,13 +117,19 @@ export const dataService = {
   // Enseignants
   async getTeachers() {
     const supabase = createServerSupabaseClient();
+    console.log('Fetching teachers...');
     const { data, error } = await supabase
       .from('teachers')
       .select('*')
       .eq('active', true)
       .order('order_index');
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching teachers:', error);
+      throw error;
+    }
+    
+    console.log('Teachers data:', data);
     return data as Teacher[];
   }
 };
