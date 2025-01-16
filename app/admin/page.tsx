@@ -5,6 +5,9 @@ import { supabase } from "@/lib/supabase/client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart, Users, BookOpen, GraduationCap } from "lucide-react"
+import CourseManagement from "@/components/admin/course-management"
+import StudentList from "@/components/admin/student-list"
+import Analytics from "@/components/admin/analytics"
 
 interface Stats {
   totalStudents: number

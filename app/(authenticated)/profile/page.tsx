@@ -1,5 +1,4 @@
 import { createServerClient } from "@/lib/supabase/server";
-import { SectionHeader } from "@/components/ui/section-header";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -20,14 +19,16 @@ export default async function ProfilePage() {
   // Récupérer les achievements
   const { data: achievements } = await supabase
     .from("user_achievements")
-    .select(`
+    .select(
+      `
       *,
       achievement:achievements(
         name,
         description,
         badge_url
       )
-    `)
+    `,
+    )
     .eq("user_id", userId)
     .order("earned_at", { ascending: false });
 
@@ -42,13 +43,15 @@ export default async function ProfilePage() {
   // Récupérer les cours en cours
   const { data: enrollments } = await supabase
     .from("course_enrollments")
-    .select(`
+    .select(
+      `
       *,
       course:courses(
         title,
         subject:subjects(name)
       )
-    `)
+    `,
+    )
     .eq("user_id", userId)
     .order("last_accessed_at", { ascending: false });
 
@@ -108,7 +111,9 @@ export default async function ProfilePage() {
                     <Trophy className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">{achievement.achievement.name}</h3>
+                    <h3 className="font-semibold">
+                      {achievement.achievement.name}
+                    </h3>
                     <p className="text-sm text-muted-foreground">
                       {achievement.achievement.description}
                     </p>
@@ -139,7 +144,9 @@ export default async function ProfilePage() {
                   <Book className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Leçons terminées</p>
+                  <p className="text-sm text-muted-foreground">
+                    Leçons terminées
+                  </p>
                   <p className="text-2xl font-bold">15</p>
                 </div>
               </div>

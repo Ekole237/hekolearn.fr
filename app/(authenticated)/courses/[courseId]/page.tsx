@@ -1,10 +1,12 @@
 import { createServerClient } from "@/lib/supabase/server";
 import { SectionHeader } from "@/components/ui/section-header";
-import { ChapterList } from "@/components/education/chapter-list";
-import { CourseProgress } from "@/components/ui/course-progress";
-import { notFound } from "next/navigation";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { AIRecommendationCard } from "@/components/education/ai-recommendation-card";
+import { notFound } from "next/navigation";
+import { PlayCircle, BookOpen } from "lucide-react";
+import type { ChapterWithRelations, LessonProgress } from "@/types/supabase";
 
 interface CoursePageProps {
   params: {
@@ -12,130 +14,108 @@ interface CoursePageProps {
   };
 }
 
+interface ChapterProgressInfo {
+  totalLessons: number;
+  completedLessons: number;
+  progress: number;
+}
+
 export default async function CoursePage({ params }: CoursePageProps) {
   const supabase = createServerClient();
   const userId = (await supabase.auth.getUser()).data.user?.id;
 
-  // Récupérer le cours
-  const { data: course } = await supabase
-    .from("courses")
-    .select(`
-      *,
-      subject:subjects(name),
-      author:profiles(full_name, avatar_url)
-    `)
-    .eq("id", params.courseId)
-    .single();
-
-  if (!course) {
+  if (!userId) {
     notFound();
   }
 
-  // Récupérer les chapitres et leur progression
+  // Récupérer le cours et ses chapitres
   const { data: chapters } = await supabase
     .from("chapters")
     .select(`
       *,
+      course:courses(
+        title,
+        description,
+        subject:categories(name)
+      ),
       lessons(count),
-      lesson_progress:lesson_progress!inner(
-        completed,
-        lesson_id
-      )
+      lesson_progress(*)
     `)
     .eq("course_id", params.courseId)
     .order("order_index");
 
-  // Récupérer les recommandations IA pour ce cours
-  const { data: recommendations } = await supabase
-    .from("ai_recommendations")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("status", "pending")
-    .limit(2);
+  if (!chapters || chapters.length === 0) {
+    notFound();
+  }
 
   // Calculer la progression pour chaque chapitre
-  const processedChapters = chapters?.map((chapter) => {
-    const totalLessons = chapter.lessons?.[0]?.count ?? 0;
+  const chaptersWithProgress = chapters.map((chapter: ChapterWithRelations): ChapterProgressInfo => {
+    const totalLessons = chapter.lessons[0]?.count ?? 0;
     const completedLessons = chapter.lesson_progress?.filter(
-      (p) => p.completed
+      (p: LessonProgress) => p.completed
     ).length ?? 0;
     
     return {
-      id: chapter.id,
-      title: chapter.title,
-      description: chapter.description,
-      progress: (completedLessons / totalLessons) * 100,
-      isLocked: false, // À implémenter la logique de verrouillage
-      isCompleted: completedLessons === totalLessons,
-      lessonsCount: totalLessons,
+      totalLessons,
       completedLessons,
+      progress: totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0,
     };
   });
 
+  const course = chapters[0].course;
+
   return (
     <div className="space-y-8">
-      <div className="space-y-4">
-        <SectionHeader
-          title={course.title}
-          description={course.description}
-        >
-          <div className="flex gap-2">
-            <Badge>{course.subject.name}</Badge>
-            <Badge variant="outline">
-              {course.estimated_duration} estimées
-            </Badge>
-          </div>
-        </SectionHeader>
-
-        <div className="flex items-center gap-4">
-          <img
-            src={course.author.avatar_url}
-            alt={course.author.full_name}
-            className="h-10 w-10 rounded-full"
-          />
-          <div>
-            <p className="text-sm font-medium">{course.author.full_name}</p>
-            <p className="text-sm text-muted-foreground">Enseignant</p>
-          </div>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <span>{course.subject.name}</span>
         </div>
+        <SectionHeader title={course.title} description={course.description} />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <div className="md:col-span-2 space-y-6">
-          <ChapterList
-            chapters={processedChapters ?? []}
-            onChapterSelect={() => {}} // À implémenter
-          />
-        </div>
+      <div className="grid gap-6">
+        {chapters.map((chapter: ChapterWithRelations, index: number) => {
+          const progress = chaptersWithProgress[index];
+          
+          return (
+            <Card key={chapter.id} className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">{chapter.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {chapter.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-sm text-muted-foreground">
+                      {progress.completedLessons}/{progress.totalLessons} leçons
+                      terminées
+                    </div>
+                    <Progress value={progress.progress} className="w-40" />
+                  </div>
+                </div>
 
-        <div className="space-y-6">
-          <div className="rounded-lg border bg-card p-4">
-            <h3 className="font-semibold mb-4">Progression globale</h3>
-            <CourseProgress
-              totalLessons={processedChapters?.reduce(
-                (acc, chapter) => acc + chapter.lessonsCount,
-                0
-              ) ?? 0}
-              completedLessons={processedChapters?.reduce(
-                (acc, chapter) => acc + chapter.completedLessons,
-                0
-              ) ?? 0}
-            />
-          </div>
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium">Objectifs du chapitre</h4>
+                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                    {chapter.objectives?.map((objective: string, i: number) => (
+                      <li key={i}>{objective}</li>
+                    ))}
+                  </ul>
+                </div>
 
-          {recommendations?.map((rec) => (
-            <AIRecommendationCard
-              key={rec.id}
-              title={rec.content.title}
-              description={rec.content.description}
-              type={rec.recommendation_type}
-              status={rec.status}
-              onAccept={() => {}} // À implémenter
-              onReject={() => {}} // À implémenter
-              onStart={() => {}} // À implémenter
-            />
-          ))}
-        </div>
+                <div className="flex justify-end">
+                  <Button>
+                    {progress.completedLessons > 0
+                      ? "Continuer"
+                      : "Commencer"}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
