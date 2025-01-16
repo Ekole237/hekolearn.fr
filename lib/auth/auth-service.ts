@@ -292,6 +292,17 @@ class AuthService {
 
     return errorMessages[code] || 'Une erreur est survenue';
   }
+
+  // get authenticated user id
+  async getAuthenticatedUserId(): Promise<string | null> {
+    try {
+      const { data: session } = await this.supabase.auth.getSession();
+      return session.session?.user.id || null;
+    } catch (error) {
+      console.error('Error getting authenticated user ID:', error);
+      return null;
+    }
+  }
 }
 
 export const authService = new AuthService();

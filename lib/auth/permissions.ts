@@ -50,9 +50,15 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     { action: 'update', subject: 'quizzes' },
     { action: 'delete', subject: 'quizzes' },
   ],
+  'parent': [
+    { action: 'read', subject: 'courses' },
+    { action: 'read', subject: 'lessons' },
+    { action: 'read', subject: 'chapters' },
+    { action: 'read', subject: 'quizzes' },
+  ],
 };
 
-export function hasPermission(role: UserRole | undefined, permission: Permission): boolean {
+export function hasPermission(role: UserRole , permission: Permission): boolean {
   if (!role) return false;
   
   return ROLE_PERMISSIONS[role]?.some(

@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Brain, GraduationCap, BarChart, CheckCircle, ArrowRight, User, Users, School } from "lucide-react";
 import { AnimatedSection, AnimatedHeroContent, AnimatedHeroImage } from "@/components/home/animated-section";
 import { ProfileCard } from "@/components/home/profile-card";
+import 'react-lazy-load-image-component/src/effects/blur.css';// If you need to, you can tweak the effect transition using the wrapper style.
 
 const subjects = [
   { 
@@ -125,13 +127,17 @@ export default function Home() {
             </div>
           </AnimatedHeroContent>
           <AnimatedHeroImage className="relative hidden lg:block">
-            <div className="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 p-8">
-              <Image
-                src="/hero-illustration.svg"
+            <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 overflow-hidden">
+              <LazyLoadImage
+                src="/images/illustration-apprentissage.jpg"
                 alt="Illustration apprentissage"
-                width={500}
-                height={500}
-                className="w-full h-full object-contain"
+                width={620}
+                height={620}
+                effect="blur"
+                wrapperProps={{
+                  style: { transitionDelay: "1s" }
+                }}
+                className="object-cover object-center w-full h-full rounded-2xl"
               />
             </div>
           </AnimatedHeroImage>

@@ -29,10 +29,12 @@ export function useUser() {
           .eq('id', userData.id)
           .single();
 
-        return {
-          ...userData,
-          ...profile
-        };
+        if (profile) {
+          return {
+            ...userData,
+            ...profile
+          };
+        }
       }
 
       return null;
@@ -51,8 +53,13 @@ export function useUser() {
 
     fetchUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (session?.user) {
+        const userData = await getUser();  // Récupère les données complètes incluant le profil
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
     });
 
     return () => {
@@ -139,6 +146,7 @@ export function useRequireTeacher() {
     }
 
     if (!isTeacher()) {
+      console.log('redirecting...', 'not teacher', isTeacher());
       router.replace('/courses');
       return null;
     }

@@ -27,6 +27,7 @@ import {
   X,
   School,
   GraduationCap,
+  LogOut
 } from "lucide-react"
 
 import dynamicIconImports from 'lucide-react/dynamicIconImports';
@@ -54,6 +55,8 @@ export const Icons = {
   sun: SunMedium,
   moon: Moon,
   laptop: Laptop,
+  logOut: LogOut,
+  gradCap: GraduationCap,
   gitHub: ({ ...props }) => (
     <svg
       aria-hidden="true"

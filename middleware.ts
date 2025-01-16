@@ -14,6 +14,7 @@ export async function middleware(request: NextRequest) {
   if (!session && (
     request.nextUrl.pathname.startsWith('/courses') ||
     request.nextUrl.pathname.startsWith('/admin') ||
+    request.nextUrl.pathname.startsWith('/teacher') ||
     request.nextUrl.pathname.startsWith('/profile') ||
     request.nextUrl.pathname.startsWith('/(authenticated)')
   )) {

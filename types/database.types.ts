@@ -118,7 +118,8 @@ export interface Database {
           email: string
           full_name?: string
           avatar_url?: string
-          role: 'student' | 'teacher' | 'admin'
+          role: 'student' | 'teacher' | 'admin' | 'parent'
+          parent_id?: string
           grade_level?: number
           created_at: string
           updated_at: string

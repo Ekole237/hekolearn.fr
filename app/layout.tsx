@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { PageTransition } from "@/components/transitions/page-transition";
+import { headers } from "next/headers";
 import { Toaster } from "@/components/ui/toaster";
-import { Navbar } from "@/components/navbar";
-import { AuthProvider } from "@/lib/auth/context";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SWRProvider } from "@/components/providers/swr-provider";
 import { ConnectionStatus } from "@/components/ui/connection-status";
+import { Navbar } from "@/components/layout/navbar";
+import { AuthProvider } from "@/lib/auth/context";
+import { PageTransition } from "@/components/transitions/page-transition";
 import "./globals.css";
+import "@/styles/editor.css";
 
 // Optimiser le chargement de la police
 const inter = Inter({ 
