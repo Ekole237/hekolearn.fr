@@ -1,22 +1,20 @@
 'use client';
 
-import { useRequireTeacher } from '@/lib/auth/hooks';
-import { ChapterForm } from '@/components/courses/chapter-form';
+import { CourseForm } from "@/components/courses/course-form";
+import { CourseCreationLayout } from "@/components/courses/course-creation-layout";
 
 export default function NewCoursePage() {
-  const { requireTeacher } = useRequireTeacher();
-
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Créer un nouveau cours</h1>
-        <p className="text-muted-foreground mt-2">
-          Commençons par créer le premier chapitre de votre cours.
-          Vous pourrez ensuite ajouter les détails du cours et les leçons.
-        </p>
+    <CourseCreationLayout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Créer un nouveau cours</h1>
+          <p className="text-muted-foreground mt-2">
+            Commencez par remplir les informations de base de votre cours. Vous pourrez ajouter des chapitres et des leçons par la suite.
+          </p>
+        </div>
+        <CourseForm />
       </div>
-
-      <ChapterForm />
-    </div>
+    </CourseCreationLayout>
   );
 }

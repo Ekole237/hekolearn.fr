@@ -7,9 +7,20 @@ import {
 } from "./types";
 import { generateSlug } from "@/lib/utils";
 
+const supabase = createClientComponentClient<Database>();
 // Fonction pour créer un chapitre
 export async function createChapter(input: CreateChapterInput) {
-  const supabase = createClientComponentClient<Database>();
+  // Récupérer la position la plus élevée des chapitres existants pour ce cours
+  const { data: existingChapters } = await supabase
+    .from("chapters")
+    .select("position")
+    .eq("course_id", input.course_id)
+    .order("position", { ascending: false })
+    .limit(1);
+
+  const nextPosition = existingChapters?.[0]?.position 
+    ? existingChapters[0].position + 1 
+    : 1;
 
   const { data, error } = await supabase
     .from("chapters")
@@ -18,7 +29,10 @@ export async function createChapter(input: CreateChapterInput) {
         title: input.title,
         description: input.description,
         course_id: input.course_id,
-        position: input.position,
+        position: nextPosition,
+        order_index: nextPosition,
+        objectives: input.objectives || [], // Utiliser les objectifs de l'input
+        prerequisites: input.prerequisites || [], // Utiliser les prérequis de l'input
       },
     ])
     .select()
@@ -34,8 +48,6 @@ export async function createChapter(input: CreateChapterInput) {
 
 // Fonction pour créer un cours
 export async function createCourse(input: CreateCourseInput, authorId: string) {
-  const supabase = createClientComponentClient<Database>();
-
   const slug = generateSlug(input.title);
 
   const { data, error } = await supabase
@@ -44,7 +56,7 @@ export async function createCourse(input: CreateCourseInput, authorId: string) {
       {
         title: input.title,
         description: input.description,
-        level: input.level,
+        category_id: input.category_id,
         image_url: input.image_url,
         author_id: authorId,
         slug,
@@ -64,8 +76,6 @@ export async function createCourse(input: CreateCourseInput, authorId: string) {
 
 // Fonction pour créer une leçon
 export async function createLesson(input: CreateLessonInput) {
-  const supabase = createClientComponentClient<Database>();
-
   const { data, error } = await supabase
     .from("lessons")
     .insert([
@@ -117,8 +127,6 @@ export async function getTeacherCourse(courseId: string) {
 
 // Fonction pour publier un cours
 export async function publishCourse(courseId: string) {
-  const supabase = createClientComponentClient<Database>();
-
   // Vérifier si le cours a au moins un chapitre avec des leçons
   const { data: course } = await getTeacherCourse(courseId);
 
@@ -153,7 +161,6 @@ export async function publishCourse(courseId: string) {
 export async function updateChaptersOrder(
   chapters: { id: string; position: number }[],
 ) {
-  const supabase = createClientComponentClient<Database>();
 
   const updates = chapters.map(({ id, position }) =>
     supabase.from("chapters").update({ position }).eq("id", id),
@@ -177,8 +184,6 @@ export async function updateLessonsOrder(
 
 // Fonction pour récupérer les cours d'un enseignant
 export async function getTeacherCourses(teacherId: string) {
-  const supabase = createClientComponentClient<Database>();
-
   const { data: courses, error } = await supabase
     .from("courses")
     .select(

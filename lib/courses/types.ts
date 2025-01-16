@@ -17,15 +17,16 @@ export type ChapterWithLessons = Chapter & {
 export interface CreateCourseInput {
   title: string;
   description: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
+  category_id: string;
   image_url?: string;
 }
 
 export interface CreateChapterInput {
   title: string;
   description: string;
-  course_id?: string;
-  position: number;
+  course_id: string;
+  objectives: string[];
+  prerequisites?: string[];
 }
 
 export interface CreateLessonInput {
