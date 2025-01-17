@@ -3,6 +3,13 @@
 import { useState, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   BoldIcon, 
   ItalicIcon, 
@@ -12,7 +19,16 @@ import {
   QuoteIcon, 
   Heading2Icon,
   FunctionSquareIcon,
-  SigmaSquareIcon 
+  SigmaSquareIcon,
+  YoutubeIcon,
+  GitGraphIcon,
+  BookOpenIcon,
+  HelpCircleIcon,
+  FileTextIcon,
+  TypeIcon,
+  ArrowUpDownIcon,
+  PlusIcon,
+  LineChartIcon
 } from 'lucide-react';
 import {
   Tooltip,
@@ -20,6 +36,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { MarkdownPreview } from './markdown-preview';
 
 interface MarkdownEditorProps {
@@ -35,6 +57,89 @@ interface ToolbarButton {
   action: (textarea: HTMLTextAreaElement) => void;
 }
 
+const templates = {
+  exercice: {
+    label: "Exercice",
+    icon: BookOpenIcon,
+    template: `# Exercice
+
+**Énoncé :**
+
+...
+
+**Solution :**
+
+...`
+  },
+  quiz: {
+    label: "Quiz",
+    icon: HelpCircleIcon,
+    template: `# Quiz
+
+1. Question 1
+   - [ ] Réponse A
+   - [ ] Réponse B
+   - [ ] Réponse C`
+  },
+  variationTable: {
+    label: "Tableau de variation",
+    icon: ArrowUpDownIcon,
+    template: `| x | -∞ | 0 | +∞ |
+|---|-----|---|-----|
+| f(x) | ↗ | ↘ | ↗ |`
+  },
+  signTable: {
+    label: "Tableau de signe",
+    icon: PlusIcon,
+    template: `# Étude du signe de f(x) = (x+2)(x-1)
+
+## Tableau de signe
+
+| x           | -∞         | -2    | 1           | +∞         |
+|-------------|------------|-------|-------------|------------|
+| x + 2       | -         | 0     | +           | +          |
+| x - 1       | -         | -     | 0           | +          |
+| f(x)        | +         | 0     | 0           | +          |
+|             | ←━━━━━━━━ | ━━━━━ | ━━━━━━━━━→ |            |
+
+## Explication
+
+1. On cherche les racines des facteurs :
+   - Pour (x+2) : x = -2
+   - Pour (x-1) : x = 1
+
+2. On place ces valeurs dans le tableau en les ordonnant.
+
+3. Pour chaque facteur :
+   - On détermine le signe avant la première racine
+   - Le signe change à chaque racine
+
+4. Pour le produit f(x) :
+   - On multiplie les signes
+   - Le produit est nul si au moins un facteur est nul
+   - (+)×(+) = +
+   - (+)×(-) = -
+   - (-)×(-) = +
+
+## Conclusion
+
+f(x) est positive sur ]-∞,-2[ ∪ ]+∞,+∞[
+f(x) est négative sur ]-2,1[
+f(x) s'annule en x = -2 et x = 1`
+  },
+  functionGraph: {
+    label: "Graphique de fonction",
+    icon: LineChartIcon,
+    template: `\`\`\`graph
+y = x^2
+xMin: -5
+xMax: 5
+yMin: -5
+yMax: 25
+\`\`\``
+  }
+};
+
 export function MarkdownEditor({
   value,
   onChange,
@@ -43,6 +148,15 @@ export function MarkdownEditor({
 }: MarkdownEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [previewMode, setPreviewMode] = useState(false);
+  const [fontSize, setFontSize] = useState("base");
+
+  const fontSizes = {
+    xs: "text-xs",
+    sm: "text-sm",
+    base: "text-base",
+    lg: "text-lg",
+    xl: "text-xl",
+  };
 
   const insertText = (
     textarea: HTMLTextAreaElement,
@@ -108,6 +222,21 @@ export function MarkdownEditor({
       label: "Bloc mathématique",
       action: (textarea) => insertText(textarea, "\n$$\n", "\n$$\n"),
     },
+    {
+      icon: YoutubeIcon,
+      label: "Vidéo YouTube",
+      action: (textarea) => {
+        const videoId = prompt("Entrez l'ID de la vidéo YouTube :");
+        if (videoId) {
+          insertText(textarea, templates.video.template.replace("VIDEO_ID", videoId));
+        }
+      },
+    },
+    {
+      icon: GitGraphIcon,
+      label: "Diagramme",
+      action: (textarea) => insertText(textarea, templates.diagram.template),
+    },
   ];
 
   return (
@@ -137,6 +266,56 @@ export function MarkdownEditor({
               </TooltipContent>
             </Tooltip>
           ))}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-8 px-2"
+              >
+                <FileTextIcon className="h-4 w-4 mr-1" />
+                Templates
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {Object.entries(templates).map(([key, template]) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (textareaRef.current) {
+                      insertText(textareaRef.current, template.template);
+                    }
+                  }}
+                >
+                  <template.icon className="h-4 w-4 mr-2" />
+                  {template.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <div className="flex items-center ml-2 border-l pl-2">
+            <TypeIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+            <Select
+              value={fontSize}
+              onValueChange={setFontSize}
+            >
+              <SelectTrigger className="h-8 w-[110px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="xs">Très petit</SelectItem>
+                <SelectItem value="sm">Petit</SelectItem>
+                <SelectItem value="base">Normal</SelectItem>
+                <SelectItem value="lg">Grand</SelectItem>
+                <SelectItem value="xl">Très grand</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="ml-auto">
             <Button
               type="button"
@@ -160,11 +339,15 @@ export function MarkdownEditor({
           placeholder={placeholder}
           className={cn(
             "min-h-[200px] w-full resize-none border-0 bg-transparent p-4 placeholder:text-muted-foreground focus-visible:outline-none",
+            fontSizes[fontSize as keyof typeof fontSizes],
             previewMode && "hidden"
           )}
         />
         {previewMode && (
-          <div className="prose prose-slate max-w-none p-4">
+          <div className={cn(
+            "prose prose-slate max-w-none p-4",
+            fontSizes[fontSize as keyof typeof fontSizes]
+          )}>
             <MarkdownPreview content={value} />
           </div>
         )}
